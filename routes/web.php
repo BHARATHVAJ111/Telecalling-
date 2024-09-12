@@ -280,6 +280,8 @@ Route::delete('/employees/{id}/delete', [EmployeeController::class, 'deleteemplo
 Route::get('/employees/{id}', [EmployeeController::class, 'viewemployee'])->name('employees.view');
 
 
+Route::get('/getAudio',[EmployeeController::class,'getaudio'])->name('play.audio');
+
 
 
 

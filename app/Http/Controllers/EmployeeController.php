@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exports\Templateexcel;
 use App\Http\Controllers\Controller;
 use App\Imports\ExcelTemplate;
+use App\Models\Audiofiles;
 use App\Models\Contactdetails;
 use App\Models\Employee;
 use Carbon\Carbon;
@@ -177,5 +178,10 @@ class EmployeeController extends Controller
             
             return redirect()->back()->withSuccess('Values Delete Successfully !');
         }
+    }
+
+    public function getaudio(Request $request) {
+        $audio = Audiofiles::where('employee_id', $request->id)->get();
+        return view('audio_play', compact('audio'));
     }
 }

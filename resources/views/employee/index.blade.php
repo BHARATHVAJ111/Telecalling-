@@ -107,10 +107,10 @@
                     }
                 </script>
 
-                <!-- <a href="{{ route('assets.edit', ['id' => $values->id]) }}">
-                    <i class="fa-solid fa-download mt-2 text-dark" title="Inward"></i>
+                <a href="{{ route('play.audio', ['id' => $values->id]) }}">
+                    <i class="fa-solid fa-download mt-2 text-dark" title="">Audio</i>
                 </a>
-                <a href="{{route('parts.asign',['id' => $values->id])}}">
+                <!-- <a href="{{route('parts.asign',['id' => $values->id])}}">
                     <i class="fa-solid fa-download mt-2 text-success fa-rotate-by" style="--fa-rotate-angle: 177deg;" title="Outward"></i>
                 </a> -->
 

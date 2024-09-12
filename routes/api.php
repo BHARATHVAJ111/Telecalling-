@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\LoginApiController;
+use App\Models\Audiofiles;
 use App\Models\Contactdetails;
 use App\Models\Employee;
 use App\Models\User;
@@ -103,4 +104,64 @@ Route::post('/employee', function (Request $request) {
         // Authentication failed
         return response()->json(['error' => 'Not Found'], 401);
     }
+});
+
+Route::get('/getcontactdetails', function(Request $request) {
+    $validator = Validator::make($request->all(), [
+        'employee_id' => 'required|numeric',
+        'date' => 'required|date',
+    ]);
+    
+    if ($validator->fails()) {
+        return response()->json(['error' => $validator->errors()], 400);
+    }
+    
+    $date = Carbon::parse($request->date)->format('Y-m-d');
+    $engineer_assign = Contactdetails::where('user_id', $request->employee_id)
+    ->where('date', $date)
+    ->get();
+    
+    // dd($engineer_assign);
+    // Check if collection is empty
+    if ($engineer_assign->isEmpty()) {
+        return response()->json(['error' => 'Numbers not found'], 404);
+    }
+    
+    // Return the entire collection as a JSON response
+    
+    return response()->json([
+        'Contact_Numbers' => $engineer_assign
+    ], 200);
+});
+
+Route::post('/storeaudiofiles',function(Request $request){
+    $validator = Validator::make($request->all(), [
+         'audio_file' => 'required|mimes:mp3|max:10240',
+        'employee_id' => 'required|numeric',
+    ]);
+    
+    if ($validator->fails()) {
+        return response()->json(['error' => $validator->errors()], 400);
+    }
+
+    if ($request->hasFile('audio_file')) {
+        $file = $request->file('audio_file');
+        $filePath = $file->store('audio_files', 'public'); // Save in storage/app/public/audio_files
+    }
+        // Save the file path in the database
+       $files=Audiofiles::create([
+            'file_path' => $filePath,
+            'employee_id'=>$request->employee_id
+        ]);
+
+        if($files){
+            return response()->json([
+               "Message"=>"Audio File Store Successfully !"
+            ],200);
+        }else{
+            return response([
+                  "Error"=>"Something Went Wrong"
+            ],404);
+        }
+
 });
