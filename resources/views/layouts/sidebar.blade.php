@@ -134,12 +134,22 @@
                         {{-- @endif --}}
 
                         <li class="nav-item">
+                            <a href="{{ route('employee.employee') }}"
+                                class="nav-link align-middle px-0 {{ request()->route()->getName() === 'employee.employee' ? 'active' : '' }}">
+                                <span class="ms-1 d-none d-sm-inline">
+                                    <img src="{{ asset('images/dashboard/customer.png') }}" height="20"
+                                        width="20" class="img">
+                                    <span class="ms-1 w-100">View Employee</span>
+                                </span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a href="{{ route('employee.index') }}"
                                 class="nav-link align-middle px-0 {{ request()->route()->getName() === 'employee.index' ? 'active' : '' }}">
                                 <span class="ms-1 d-none d-sm-inline">
-                                    <img src="{{ asset('images/dashboard/home.png') }}" height="20"
+                                    <img src="{{ asset('images/dashboard/speaker.png') }}" height="20"
                                         width="20" class="img">
-                                    <span class="ms-1 w-100">View Employee</span>
+                                    <span class="ms-1 w-100">View Audio</span>
                                 </span>
                             </a>
                         </li>

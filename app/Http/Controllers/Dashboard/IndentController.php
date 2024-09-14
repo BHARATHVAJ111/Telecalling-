@@ -48,13 +48,13 @@ class IndentController extends Controller
 
 
         $materialTypes = MaterialType::all();
-        $truckTypes = TruckType::all();
-        $locations = Location::all();
+        // $truckTypes = TruckType::all();
+        // $locations = Location::all();
         $indentCount = $indents->count();
         $selectedIndentId = $indents->isNotEmpty() ? $indents->pluck('id')->first() : null;
         $weightUnits = ['kg' => 'Kilograms', 'tons' => 'Tons'];
 
-        return view('indent.index', compact('locations', 'indents', 'indentCount', 'selectedIndentId', 'weightUnits', 'materialTypes', 'truckTypes'));
+        return view('indent.index', compact( 'indents', 'indentCount', 'selectedIndentId', 'weightUnits', 'materialTypes'));
     }
 
     public function isUniqueLocationStatusOne(Location $location)
@@ -281,11 +281,11 @@ class IndentController extends Controller
         $quotedIndentCount -= $confirmationCount;
 
         $weightUnits = ['kg' => 'Kilograms', 'tons' => 'Tons'];
-        $locations = Location::all();
-        $materialTypes = MaterialType::all();
-        $truckTypes = TruckType::all();
+        // $locations = Location::all();
+        // $materialTypes = MaterialType::all();
+        // $truckTypes = TruckType::all();
 
-        return view('dashboard', compact('materialTypes', 'truckTypes', 'locations', 'unquotedIndentCount', 'quotedIndentCount', 'indents', 'weightUnits', 'confirmationCount'));
+        return view('dashboard', compact('unquotedIndentCount', 'quotedIndentCount', 'indents', 'weightUnits', 'confirmationCount'));
     }
 
     public function quoted()

@@ -16,11 +16,40 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class EmployeeController extends Controller
 {
-    public function index()
+
+    public function employee(){
+
+        $engineers=[];
+        $employee=Employee::orderBy('name','asc')->get();
+        return view('employee.employees', compact('engineers', 'employee'));
+    }
+    public function index(Request $request)
     {
-        $assets = Employee::all();
+        
+        // $assets = Employee::all();
         $engineers = [];
-        return view('employee.index', compact('assets', 'engineers'));
+        $employee = Employee::orderBy('name', 'asc')->get();
+        $start = Carbon::today();
+        $end = Carbon::today();
+
+        $firstEmployee = Employee::orderBy('name', 'asc')->first();
+
+        $firstEmpAudio = Audiofiles::where('employee_id', $firstEmployee->id)
+            ->whereBetween('created_at', [$start->startOfDay(), $end->endOfDay()])
+            ->get();
+
+            
+            $startDate = Carbon::parse($request->start_date)->startOfDay();
+            $endDate = Carbon::parse($request->end_date)->endOfDay();
+            
+            
+            
+            $AudioFilesSelect = Audiofiles::whereBetween('created_at', [$startDate, $endDate])
+            ->where('employee_id', $request->User_id)
+            ->get();
+            // dd($firstEmpAudio);
+
+        return view('employee.index', compact('engineers', 'employee', 'firstEmpAudio', 'AudioFilesSelect'));
     }
 
     public function baseview()
@@ -104,6 +133,18 @@ class EmployeeController extends Controller
 
         return redirect()->route('employee.index')->withSuccess('Employee Delete Successfully!');
     }
+    public function audiodelete(Request $request)
+    {
+
+        // dd($request->all());
+        $employee = Audiofiles::findOrfail($request->id);
+
+        if ($employee) {
+            $employee->delete();
+        }
+
+        return redirect()->route('employee.index')->withSuccess('Audio Delete Successfully!');
+    }
 
     public function downloadExcelTemplate()
     {
@@ -166,22 +207,34 @@ class EmployeeController extends Controller
 
     public function basedelete(Request $request)
     {
-      
+
         $startDate = $request->start_date;
         $endDate = $request->end_date;
-        
+
         $base = Contactdetails::whereBetween('date', [$startDate, $endDate])->delete();
-        
-        if(!$base){
+
+        if (!$base) {
             return redirect()->back()->witherrors('Given Dates Dont Have Values');
-        }else{
-            
+        } else {
+
             return redirect()->back()->withSuccess('Values Delete Successfully !');
         }
     }
 
-    public function getaudio(Request $request) {
+    public function getaudio(Request $request)
+    {
         $audio = Audiofiles::where('employee_id', $request->id)->get();
         return view('audio_play', compact('audio'));
+    }
+
+    public function callhistory(Request $request)
+    {
+
+        // dd($request->all());
+        // Convert the dates to the appropriate format if necessary
+
+
+
+        return view('employee.index', compact('AudioFilesSelect', 'employee', 'engineers', 'firstEmpAudio'));
     }
 }

@@ -15,14 +15,42 @@
         <div class="welcome-back">Hai JKGPL Admin<span class="drop-truck"></span></div>
     </div>
     @endif
-    <!-- <div class="d-flex justify-content-end">
-               <label for="" class="fw-bold fs-5 me-1">Search : </label>
-               <input class="w3-input w3-border w3-padding p-1 w-50 bg-light border rounded" type="text" placeholder="Search for material name.." id="myInput" onkeyup="myFunction()">
-            </div> -->
 
-    <div class="d-flex justify-content-end">
+    <form action="{{route('employee.index')}}" method="GET">
+        @csrf
+        <div class="d-flex justify-content-between">
+       
+        <div class="form-group mt-1">
+            <label for="source_of_lead">Employee List:</label>
+            <select class="form-select @error('User_id') is-invalid @enderror mt-3" id="source_of_lead" name="User_id">
+                <option value="">Select Employee</option>
+                @foreach($employee as $employees)
+                <option value="{{$employees->id}}">{{$employees->name}}</option>
+                @endforeach
+            </select>
+            @error('User_id')
+            <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+
+        <div>
+            <label for="inward_search_date" class="pb-2 lable">Start Date:</label><br>
+            <input type="date" id="inward_search_date" name="start_date" class=" mb-2 mt-3 input" required>
+        </div>
+        <div>
+            <label for="inward_search_date" class="pb-2 lable">End Date:</label><br>
+            <input type="date" id="inward_search_date" name="end_date" class="mt-3 mb-2 input" required>
+        </div>
+     
+        </div>
+        <div  class="d-flex justify-content-center align-items-center">
+            <button type="submit" class="btn btn-primary ">Get History</button>
+        </div>
+    </form>
+
+    <!-- <div class="d-flex justify-content-end">
         <button type="button" class="btn btn-primary dash1 mt-3 text-dark" data-bs-toggle="modal" data-bs-target="#createEmployee"><i class="fa-solid fa-plus text-light pe-1"></i>Add Employee</button>
-    </div>
+    </div> -->
 
     <div class="col-auto">
         @if (session('success'))
@@ -31,17 +59,16 @@
         </div>
         @endif
         @if ($errors->any())
-    <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
                 <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
+                @endforeach
+            </ul>
+        </div>
+        @endif
         <!-- <a href="#."><img src="images/dashboard/search.png" height="25" width="25"></a> -->
         <!-- Inside the 'content-wrapper' div -->
-
 
 
         <!-- Modal -->
@@ -63,40 +90,44 @@
     </div>
 </div>
 
+@if($AudioFilesSelect->isEmpty())
+<!-- Display firstEmpAudio when AudioFilesSelect is empty -->
+@if($firstEmpAudio)
+<!-- Render firstEmpAudio data as needed -->
+@foreach($firstEmpAudio as $audio)
+<!-- Add any other details or actions you need -->
+@endforeach
+@php
+// Fetch employee data
+$employee = \App\Models\Employee::find($audio->employee_id);
 
-
-<table class="table text-center able-striped table-bordered table-hover table-esponsive mt-5" id="myTable">
-    <thead class="pb-2">
-        <tr class="pb-2">
-            <th>Sr.No</th>
-           <th>Name</th>
-           <th>Mobile Number</th>
-           <!-- <th>Password</th> -->
-            <th scope="col">Action</th>
+@endphp
+<h5 class="mt-5">Employee: {{ $employee ? $employee->name : 'Not found' }}</h5>
+<table class="table text-center bg-light shadow table-striped table-bordered table-hover table-esponsive ">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>File Name</th>
+            <th>Mobile</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
 
-        @foreach ($assets as $key => $values)
-        <tr class="bg-light shadow rounded-circle pb-5">
-            <td>{{$key + 1}}</td>
-            <td>{{ $values->name }}</td>
-            <td>{{ $values->mobile }}</td>
-            <!-- <td>{{ $values->password }}</td> -->
-            <td class="d-flex justify-content-around">
-
-                <!-- <a href="{{route('parts.show',['id'=>$values->id])}}" class="pt-2">
-                    <i class="fa-sharp fa-solid fa-eye" style="color:black;"></i>
-                </a> -->
-
-                <a href="{{route('employee.edit',['id'=>$values->id])}}" class="pt-2 ps-2">
-                    <i class="fa-solid fa-pencil"></i>
-                </a>
-
-                <form action="{{route('employee.delete',['id'=>$values->id])}}" method="POST" id="delete-form-{{ $values->id }}">
+        @foreach($firstEmpAudio as $key => $audioFile)
+        <tr>
+            <td>{{ $key + 1 }}</td>
+            <td> <audio controls>
+                    <source src="{{ asset('storage/' . $audioFile->file_path) }}" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+            </td>
+            <td>{{$audioFile->customer_mobile}}</td>
+            <td>
+            <form action="{{route('audio.delete',['id'=>$audioFile->id])}}" method="POST" id="delete-form-{{ $audioFile->id }}">
                     @csrf
                     @method('DELETE')
-                    <button type="button" onclick="confirmDelete({{ $values->id }})" class="btn"> <i class="fa-solid fa-trash-can" style="color: #f50025;"></i></button>
+                    <button type="button" onclick="confirmDelete({{ $audioFile->id }})" class="btn"> <i class="fa-solid fa-trash-can" style="color: #f50025;"></i></button>
                 </form>
 
                 <script>
@@ -106,19 +137,65 @@
                         }
                     }
                 </script>
-
-                <a href="{{ route('play.audio', ['id' => $values->id]) }}">
-                    <i class="fa-solid fa-download mt-2 text-dark" title="">Audio</i>
-                </a>
-                <!-- <a href="{{route('parts.asign',['id' => $values->id])}}">
-                    <i class="fa-solid fa-download mt-2 text-success fa-rotate-by" style="--fa-rotate-angle: 177deg;" title="Outward"></i>
-                </a> -->
-
+ <!-- Add any actions or links related to the audio file here -->
             </td>
         </tr>
         @endforeach
     </tbody>
 </table>
+@else
+<p>No audio available for the first employee.</p>
+@endif
+@else
+<!-- Display AudioFilesSelect collection as a table -->
+@foreach($AudioFilesSelect as $audioFile) @endforeach
+@php
+// Fetch employee data
+$employee = \App\Models\Employee::find($audioFile->employee_id);
+
+@endphp
+<h5>Employee: {{ $employee ? $employee->name : 'Not found' }}</h5>
+
+<table class="table text-center bg-light shadow table-striped table-bordered table-hover table-esponsive">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>File Name</th>
+            <th>Mobile</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach($AudioFilesSelect as $key => $audioFile)
+        <tr>
+            <td>{{ $key + 1 }}</td>
+            <td><audio controls>
+                    <source src="{{ asset('storage/' . $audioFile->file_path) }}" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+            </td>
+            <td>{{$audioFile->customer_mobile}}</td>
+            <td>
+            <form action="{{route('audio.delete',['id'=>$audioFile->id])}}" method="POST" id="delete-form-{{ $audioFile->id }}">
+                    @csrf
+                    @method('DELETE')
+                    <button type="button" onclick="confirmDelete({{ $audioFile->id }})" class="btn"> <i class="fa-solid fa-trash-can" style="color: #f50025;"></i></button>
+                </form>
+
+                <script>
+                    function confirmDelete(assetId) {
+                        if (confirm('Are you sure you want to delete this data?')) {
+                            document.getElementById('delete-form-' + assetId).submit();
+                        }
+                    }
+                </script>
+ <!-- Add any actions or links related to the audio file here -->
+            </td>
+        </tr>
+        @endforeach
+    </tbody>
+</table>
+@endif
 <script>
     function myFunction() {
         var input, filter, table, tr, td, i;
@@ -139,7 +216,4 @@
         }
     }
 </script>
-
-
-
 @endsection

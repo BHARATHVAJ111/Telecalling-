@@ -138,6 +138,10 @@ Route::post('/storeaudiofiles',function(Request $request){
     $validator = Validator::make($request->all(), [
          'audio_file' => 'required|mimes:mp3|max:10240',
         'employee_id' => 'required|numeric',
+        'customer_mobile' => [
+        'required',
+        'regex:/^(\+?\d{1,3}[-.\s]?)?\d{10}$/',
+    ],
     ]);
     
     if ($validator->fails()) {
@@ -151,6 +155,7 @@ Route::post('/storeaudiofiles',function(Request $request){
         // Save the file path in the database
        $files=Audiofiles::create([
             'file_path' => $filePath,
+            'customer_mobile'=>$request->customer_mobile,
             'employee_id'=>$request->employee_id
         ]);
 

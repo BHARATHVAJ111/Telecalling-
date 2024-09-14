@@ -19,12 +19,13 @@
    
     <tr>
         <td class="">{{$key+1}}</td>
-      <td> <audio controls>
+      <td>
+         <audio controls>
             <source src="{{ asset('storage/' . $values->file_path) }}" type="audio/mpeg">
             Your browser does not support the audio element.
         </audio></td>
     </tr>
+    @endforeach
   </tbody>
 </table>
-    @endforeach
 @endif

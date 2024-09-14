@@ -111,6 +111,7 @@ Store Routes
 --------------------------------------------
 --------------------------------------------*/
 
+Route::get('/employee/employee',[EmployeeController::class,'employee'])->name('employee.employee');
 Route::get('/employee/index',[EmployeeController::class,'index'])->name('employee.index');
 Route::get('/employee/base',[EmployeeController::class,'baseview'])->name('employee.base');
 Route::get('/contact/delete',[EmployeeController::class,'contactbulkdelete'])->name('Contact.delete');
@@ -119,6 +120,10 @@ Route::post('/employee/store',[EmployeeController::class,'store'])->name('employ
 Route::get('/employee/edit',[EmployeeController::class,'edit'])->name('employee.edit');
 Route::put('/employee/update',[EmployeeController::class,'update'])->name('employee.update');
 Route::delete('/employee/delete',[EmployeeController::class,'delete'])->name('employee.delete');
+
+
+Route::post('/employee/callhistory',[EmployeeController::class,'callhistory'])->name('employee.callhistory');
+Route::delete('/employee/callhistory/delete',[EmployeeController::class,'audiodelete'])->name('audio.delete');
 
 
 
