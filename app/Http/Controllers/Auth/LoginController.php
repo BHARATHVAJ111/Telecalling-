@@ -81,7 +81,7 @@ class LoginController extends Controller
             //     return view('auth.login');
             // }
 
-            return redirect()->route('employee.index');
+            return redirect()->route('employee.employee');
         } else {
             return redirect()->route('login')
                 ->with('error', 'Email-Address And Password Are Wrong.');

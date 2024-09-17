@@ -141,6 +141,7 @@ Route::post('/storeaudiofiles',function(Request $request){
         'customer_mobile' => [
         'required',
         'regex:/^(\+?\d{1,3}[-.\s]?)?\d{10}$/',
+        'unique:audiofiles,customer_mobile',
     ],
     ]);
     

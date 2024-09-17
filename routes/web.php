@@ -123,7 +123,8 @@ Route::delete('/employee/delete',[EmployeeController::class,'delete'])->name('em
 
 
 Route::post('/employee/callhistory',[EmployeeController::class,'callhistory'])->name('employee.callhistory');
-Route::delete('/employee/callhistory/delete',[EmployeeController::class,'audiodelete'])->name('audio.delete');
+Route::get('/employee/callhistory/delete',[EmployeeController::class,'audiodelete'])->name('audio.delete');
+Route::delete('/employee/callhistory/delete/bulk',[EmployeeController::class,'bulkaudiodelete'])->name('employees.bulkDelete');
 
 
 

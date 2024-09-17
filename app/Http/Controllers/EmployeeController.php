@@ -37,7 +37,6 @@ class EmployeeController extends Controller
         $firstEmpAudio = Audiofiles::where('employee_id', $firstEmployee->id)
             ->whereBetween('created_at', [$start->startOfDay(), $end->endOfDay()])
             ->get();
-
             
             $startDate = Carbon::parse($request->start_date)->startOfDay();
             $endDate = Carbon::parse($request->end_date)->endOfDay();
@@ -136,7 +135,7 @@ class EmployeeController extends Controller
     public function audiodelete(Request $request)
     {
 
-        // dd($request->all());
+        dd($request->all());
         $employee = Audiofiles::findOrfail($request->id);
 
         if ($employee) {
@@ -236,5 +235,26 @@ class EmployeeController extends Controller
 
 
         return view('employee.index', compact('AudioFilesSelect', 'employee', 'engineers', 'firstEmpAudio'));
+    }
+
+    public function bulkaudiodelete(Request $request){
+
+        $validated = $request->validate([
+            'ids' => 'required|array', // 'ids' must be an array
+            'ids.*' => 'exists:audiofiles,id' // Each selected id must exist in the audiofiles   table
+        ], [
+            'ids.required' => 'Please select at least one employee to delete.',
+            'ids.*.exists' => 'One or more selected employees do not exist.'
+        ]);
+
+        // Retrieve the IDs from the request
+        $audioIds = $request->input('ids');
+        if($audioIds){
+            $audio=Audiofiles::whereIn('id',$audioIds)->get();
+             return redirect()->route('employee.index')->with('success','Selected Audio Files Deleted Successfully!');
+        }else{
+            return redirect()->route('employee.index')->with('error','An error occurred while deleting employees');     
+        }
+        
     }
 }
